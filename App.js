@@ -1,21 +1,17 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
-
-import Slider from '@react-native-community/slider'
+import { View, Text, StyleSheet, Switch } from "react-native";
 
 export default function App() {
-  const [valor, setValor] = useState(50)
+  const [status, setStatus] = useState(false)
 
   return (
     <View style={styles.container}>
-      <Slider
-        minimumValue={0}
-        maximumValue={100}
-        value={valor}
-        onValueChange={(valorSeleconado) => setValor(valorSeleconado)}
+      <Switch
+        value={status}
+        onValueChange={(valorSelecionado) => setStatus(valorSelecionado)}
       />
 
-      <Text>{valor}</Text>
+      <Text>{String(status)}</Text>
     </View>
   );
 }
