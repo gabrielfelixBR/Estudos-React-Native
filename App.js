@@ -1,22 +1,41 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Button,} from "react-native";
-
+import { View, Text, StyleSheet, TextInput, TouchableOpacity,} from "react-native";
+import AsyncStorange from '@react-native-async-storage/async-storage'
 
 export default function App() {
-  const [contador, setContador] = useState(0)
-  const [textContador, setTextContador] = useState(0)
-  
+  const [input, setInput] = useState('')
+  const [nome, setNome] = useState('')
+
+  async function gravatNome(){
+    await AsyncStorange.setItem('@nome', input)
+    setNome(input)
+    setInput('')
+    console.log(input)
+  }
+
   useEffect(() => {
-    if(contador > 0 && contador < 10) {
-      setTextContador(contador * 2)
-    }
-  }, [contador])
+    async function loadData(){
+      await AsyncStorange.getItem('@nome').then((value) => {
+        setNome(value)
+      })
+    }     
+    loadData()
+  }, [])
 
   return (
     <View style={styles.container}>
-      <Button title="Aumentar" onPress={() => setContador(contador+1)}/>
-      <Text style={{fontSize: 30}}>{contador} x 2 = {textContador}</Text>
-      <Button title="Zerar" onPress={() => setContador(0) + setTextContador(0)}/>
+      <View style={styles.containerInput}>
+        <TextInput
+          style={styles.input}
+          value={input}
+          onChangeText={(item) => setInput(item)}
+        />
+        <TouchableOpacity style={styles.button} onPress={gravatNome}>
+          <Text style={styles.textInput}>+</Text>
+        </TouchableOpacity>
+      </View>
+
+      <Text style={styles.textNome}>{nome}</Text>
     </View>
   );
 }
@@ -24,8 +43,41 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 50
+    marginTop: 50,
+    marginHorizontal: 10
   },
+  input: {
+    width: 300,
+    height: 50,
+    borderWidth: 1,
+    borderRadius: 5,
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0,
+    paddingHorizontal: 10,
+    fontSize: 18
+  },
+  button: {
+    width: 50,
+    height: 50,
+    backgroundColor: '#000',
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0
+  },
+  textInput: {
+    color: '#fff',
+    fontSize: 34
+  },
+  textNome: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginTop: 30
+  },
+  containerInput: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  }
 });
